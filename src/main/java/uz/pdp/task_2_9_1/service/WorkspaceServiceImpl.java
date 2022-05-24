@@ -13,10 +13,7 @@ import uz.pdp.task_2_9_1.payload.WorkspaceDTO;
 import uz.pdp.task_2_9_1.repository.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -65,22 +62,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         for (WorkspacePermissionName workspacePermissionName : workspacePermissionNames) {
             WorkspacePermission workspacePermission = new WorkspacePermission(
                     ownerRole,
-                    workspacePermissionName);
+                    Collections.singletonList(workspacePermissionName));
             workspacePermissions.add(workspacePermission);
             if (workspacePermissionName.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_ADMIN)) {
                 workspacePermissions.add(new WorkspacePermission(
                         adminRole,
-                        workspacePermissionName));
+                        Collections.singletonList(workspacePermissionName)));
             }
             if (workspacePermissionName.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_MEMBER)) {
                 workspacePermissions.add(new WorkspacePermission(
                         memberRole,
-                        workspacePermissionName));
+                        Collections.singletonList(workspacePermissionName)));
             }
             if (workspacePermissionName.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_GUEST)) {
                 workspacePermissions.add(new WorkspacePermission(
                         guestRole,
-                        workspacePermissionName));
+                        Collections.singletonList(workspacePermissionName)));
             }
 
         }
