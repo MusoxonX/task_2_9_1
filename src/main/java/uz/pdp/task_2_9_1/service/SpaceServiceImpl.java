@@ -3,16 +3,10 @@ package uz.pdp.task_2_9_1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import uz.pdp.task_2_9_1.entity.Space;
-import uz.pdp.task_2_9_1.entity.SpaceUser;
-import uz.pdp.task_2_9_1.entity.User;
-import uz.pdp.task_2_9_1.entity.Workspace;
+import uz.pdp.task_2_9_1.entity.*;
 import uz.pdp.task_2_9_1.payload.ApiResponse;
 import uz.pdp.task_2_9_1.payload.SpaceDto;
-import uz.pdp.task_2_9_1.repository.AttachmentRepository;
-import uz.pdp.task_2_9_1.repository.SpaceRepository;
-import uz.pdp.task_2_9_1.repository.SpaceUserRepository;
-import uz.pdp.task_2_9_1.repository.WorkspaceRepository;
+import uz.pdp.task_2_9_1.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +27,14 @@ public class SpaceServiceImpl implements SpaceService{
     @Autowired
     SpaceUserRepository spaceUserRepository;
 
+    @Autowired
+    WorkspaceUserRepository workspaceUserRepository;
+
+    @Autowired
+    ClickAppRepository clickAppRepository;
+    @Autowired
+    ViewRepository viewRepository;
+
     /**
      * SPACE QO'SHISH VA SPACEGA USER QO'SHISH
      * @param spaceDto
@@ -47,12 +49,19 @@ public class SpaceServiceImpl implements SpaceService{
             return new ApiResponse("like this space already exists",false);
         }
         Workspace workspace = workspaceRepository.findById(spaceDto.getWorkspaceId()).orElseThrow(() -> new ResourceNotFoundException("workspace"));
+        List<WorkspaceUser> workspaceUserList = workspaceUserRepository.findByWorkspaceId(spaceDto.getWorkspaceId());
+        // CLICKAPP LARNI IDSI BO'YICHA OLISH VA UNI SPACE OCHILGANDA QO'SHISH
+        List<ClickApps> clickAppsList = clickAppRepository.findAllById(spaceDto.getClickAppIdList());
+        // VIEW LARNI IDSI BO'YICHA OLISH VA UNI HAM SPACE OCHILGANDA QO'SHIB QO'YISH
+        List<View> viewList = viewRepository.findAllById(spaceDto.getViewList());
         Space space = new Space(
                 spaceDto.getName(),
                 spaceDto.getColor(),
                 spaceDto.getAvatarId() == null ? null:attachmentRepository.findById(spaceDto.getAvatarId()).orElseThrow(() -> new ResourceNotFoundException("avatar")),
-                user,
-                workspace);
+                workspaceUserList,
+                workspace,
+                clickAppsList,
+                viewList);
         spaceRepository.save(space);
 
         // SPACEUSERGA SPACE OCHGANNI QO'SHILDI

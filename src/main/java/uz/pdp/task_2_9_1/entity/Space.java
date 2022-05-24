@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import uz.pdp.task_2_9_1.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,12 +28,21 @@ public class Space extends AbsUUIDEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Attachment avatar;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User owner;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<WorkspaceUser> owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Workspace workspace;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private List<ClickApps> clickApps;
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private List<View> viewList;
 
     @PrePersist
     @PreUpdate
@@ -40,11 +50,13 @@ public class Space extends AbsUUIDEntity {
         this.initialLetter = name.substring(0, 1);
     }
 
-    public Space(String name, String color, Attachment avatar, User owner, Workspace workspace) {
+    public Space(String name, String color, Attachment avatar, List<WorkspaceUser> owner, Workspace workspace,List<ClickApps> clickApps, List<View> viewList) {
         this.name = name;
         this.color = color;
         this.avatar = avatar;
-        this.owner = owner;
         this.workspace = workspace;
+        this.owner = owner;
+        this.clickApps = clickApps;
+        this.viewList = viewList;
     }
 }

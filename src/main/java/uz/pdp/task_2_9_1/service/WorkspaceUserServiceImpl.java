@@ -49,7 +49,7 @@ public class WorkspaceUserServiceImpl implements WorkspaceUserService{
      */
     @Override
     public ApiResponse getMembers(Long workspaceId, User user) {
-        List<WorkspaceUser> userList = workspaceUserRepository.findByUserId(user.getId());
+        List<WorkspaceUser> userList = workspaceUserRepository.findByWorkspaceId(workspaceId);
         return new ApiResponse("user list",true,userList);
     }
 }
